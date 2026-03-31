@@ -37,11 +37,12 @@ export function useBarberX() {
   }, []);
 
   // CRUD: Criar / Logar Usuário
-  const login = (email: string, name: string = 'Cliente') => {
-    const newUser = { id: Date.now().toString(), name, email };
-    setUser(newUser);
-    localStorage.setItem('@BarberX:user', JSON.stringify(newUser));
-  };
+  // No seu useBarberX.ts
+const login = (email: string, name: string = 'Cliente') => {
+  const newUser = { id: Date.now().toString(), name, email };
+  setUser(newUser); // Isso deve disparar a re-renderização da página
+  localStorage.setItem('@BarberX:user', JSON.stringify(newUser));
+};
 
   const logout = () => {
     setUser(null);

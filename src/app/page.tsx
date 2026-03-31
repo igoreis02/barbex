@@ -8,6 +8,10 @@ export default function Home() {
   // 1. ATUALIZADO: Adicionamos a view 'calendar'
   const [currentView, setCurrentView] = useState<'login' | 'register' | 'book' | 'services' | 'barbers' | 'calendar' | 'profile'>('login');
   
+  // Estados dos inputs dos formulários (Novo)
+  const [emailInput, setEmailInput] = useState('');
+  const [nameInput, setNameInput] = useState('');
+
   // Estados temporários do fluxo
   const [selectedService, setSelectedService] = useState('');
   const [selectedBarber, setSelectedBarber] = useState('');
@@ -19,13 +23,15 @@ export default function Home() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login('cliente@email.com', 'Membro BarberX');
+    // Usa o email digitado. Se não tiver nome, usa um padrão.
+    login(emailInput, 'Membro BarberX');
     setCurrentView('book');
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    login('novo@email.com', 'Novo Membro');
+    // Usa o email e nome digitados.
+    login(emailInput, nameInput || 'Novo Membro');
     setCurrentView('book');
   };
 
@@ -122,7 +128,14 @@ export default function Home() {
             <label className="text-[10px] uppercase tracking-widest text-brand-accent font-bold block mb-2">NOME COMPLETO</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-accent/50"><Icons.User /></div>
-              <input type="text" placeholder="Seu nome e sobrenome" className="w-full py-4 pl-12 pr-4 rounded-xl bg-[#141414] text-white border border-transparent outline-none focus:border-brand-accent/30 placeholder:text-zinc-600 text-sm" required />
+              <input 
+                type="text" 
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                placeholder="Seu nome e sobrenome" 
+                className="w-full py-4 pl-12 pr-4 rounded-xl bg-[#141414] text-white border border-transparent outline-none focus:border-brand-accent/30 placeholder:text-zinc-600 text-sm" 
+                required 
+              />
             </div>
           </div>
 
@@ -131,7 +144,14 @@ export default function Home() {
             <label className="text-[10px] uppercase tracking-widest text-brand-accent font-bold block mb-2">EMAIL</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-accent/50"><Icons.Mail /></div>
-              <input type="email" placeholder="exemplo@email.com" className="w-full py-4 pl-12 pr-4 rounded-xl bg-[#141414] text-white border border-transparent outline-none focus:border-brand-accent/30 placeholder:text-zinc-600 text-sm" required />
+              <input 
+                type="email" 
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="exemplo@email.com" 
+                className="w-full py-4 pl-12 pr-4 rounded-xl bg-[#141414] text-white border border-transparent outline-none focus:border-brand-accent/30 placeholder:text-zinc-600 text-sm" 
+                required 
+              />
             </div>
           </div>
 
@@ -212,7 +232,14 @@ export default function Home() {
               <label className="text-xs tracking-wider text-brand-textMuted font-medium block mb-2">EMAIL</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400"><Icons.Mail /></div>
-                <input type="email" placeholder="seu@email.com" className="w-full py-4 pl-12 pr-4 rounded-xl bg-white text-zinc-900 border-none outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-zinc-400 font-medium" required />
+                <input 
+                  type="email" 
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="seu@email.com" 
+                  className="w-full py-4 pl-12 pr-4 rounded-xl bg-white text-zinc-900 border-none outline-none focus:ring-2 focus:ring-brand-accent placeholder:text-zinc-400 font-medium" 
+                  required 
+                />
               </div>
             </div>
 
