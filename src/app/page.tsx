@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useBarberX } from '../hooks/useBarberX';
 
 // ---------------------------------------------
-// 1. ÍCONES (Isolados fora do componente principal)
+// 1. ÍCONES
 // ---------------------------------------------
 const Icons = {
   Mail: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>,
@@ -60,14 +60,14 @@ const BottomNav = ({ currentView, setCurrentView }: BottomNavProps) => (
   </div>
 );
 
-
 // ---------------------------------------------
 // 3. COMPONENTE PRINCIPAL (HOME)
 // ---------------------------------------------
 export default function Home() {
   const { user, appointments, login, logout, createAppointment, cancelAppointment } = useBarberX();
   
-  const [currentView, setCurrentView] = useState<'landing' | 'login' | 'register' | 'shops' | 'book' | 'services' | 'barbers' | 'calendar' | 'profile'>('landing');
+  // TELA INICIAL AGORA É 'login' ou 'shops' (se já estiver logado)
+  const [currentView, setCurrentView] = useState<'login' | 'register' | 'shops' | 'book' | 'services' | 'barbers' | 'calendar' | 'profile'>(user ? 'shops' : 'login');
   
   const [emailInput, setEmailInput] = useState('');
   const [nameInput, setNameInput] = useState('');
@@ -115,50 +115,18 @@ export default function Home() {
   };
 
   // ---------------------------------------------
-  // TELA 0: LANDING PAGE (TELA INICIAL)
-  // ---------------------------------------------
-  if (currentView === 'landing') {
-    return (
-      <main className="min-h-screen bg-[#0a0a0a] flex flex-col relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1200&auto=format&fit=crop" 
-            alt="Barbearia Background" 
-            className="w-full h-full object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black/60"></div>
-        </div>
-
-        <div className="z-10 flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <h1 className="text-5xl font-light tracking-[0.2em] text-brand-accent mb-2">
-            BARBER<span className="font-bold">X</span>
-          </h1>
-          <p className="text-zinc-400 tracking-widest uppercase text-[10px] mb-12">
-            Estilo e Confiança em cada corte.
-          </p>
-
-          <button 
-            onClick={() => setCurrentView(user ? 'shops' : 'login')}
-            className="group relative px-12 py-4 bg-brand-accent text-[#3b2a1a] font-bold text-sm tracking-[0.2em] uppercase rounded-full hover:bg-brand-accentHover transition-all shadow-[0_0_30px_rgba(209,167,126,0.2)]"
-          >
-            Agendar Horário
-          </button>
-        </div>
-
-        <div className="z-10 p-10 flex flex-col items-center gap-4">
-           <p className="text-[9px] text-zinc-500 tracking-[0.3em] uppercase font-bold">Siga-nos: @barberx</p>
-        </div>
-      </main>
-    );
-  }
-
-  // ---------------------------------------------
   // TELA 1: LOGIN
   // ---------------------------------------------
   if (currentView === 'login') {
     return (
       <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-white font-sans relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/90 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/90 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1200&auto=format&fit=crop" 
+            alt="Fundo" 
+            className="w-full h-full object-cover opacity-20"
+          />
+        </div>
         
         <div className="w-full max-w-md flex flex-col z-10 mt-10">
           <div className="flex flex-col items-center mb-16">
@@ -195,8 +163,8 @@ export default function Home() {
               </div>
             </div>
 
-            <button type="submit" className="w-full py-4 mt-8 rounded-full bg-brand-accent text-[#3b2a1a] font-bold text-sm tracking-wide hover:bg-brand-accentHover transition-colors flex justify-center items-center gap-2">
-              ENTRAR NA BARBEARIA <span className="text-lg">→</span>
+            <button type="submit" className="w-full py-4 mt-8 rounded-full bg-brand-accent text-[#3b2a1a] font-bold text-sm tracking-wide hover:bg-brand-accentHover transition-colors flex justify-center items-center gap-2 uppercase">
+              Entrar
             </button>
           </form>
 
@@ -292,8 +260,8 @@ export default function Home() {
   }
 
   // ---------------------------------------------
-  // TELA HOME: LISTA DE BARBEARIAS (NOVO DESIGN DA IMAGEM 1 e 2)
-  // NOTA: A BottomNav FOI REMOVIDA desta tela conforme solicitado.
+  // TELA HOME: LISTA DE BARBEARIAS (MARKETPLACE)
+  // NOTA: Sem menu inferior nesta tela.
   // ---------------------------------------------
   if (currentView === 'shops') {
     const featuredShops = [
@@ -353,6 +321,25 @@ export default function Home() {
             <Icons.Filter />
           </button>
         </div>
+
+        {/* AGENDAMENTO ATUAL (Aparece apenas se tiver agendamentos) */}
+        {appointments.length > 0 && (
+          <div className="px-6 mb-8">
+            <h2 className="text-sm font-bold text-brand-accent mb-4 tracking-widest uppercase">Próximo Agendamento</h2>
+            <div className="bg-[#141414] p-4 rounded-2xl border border-brand-accent/30 flex items-center justify-between">
+              <div>
+                <p className="font-bold text-white text-sm">{appointments[0].service}</p>
+                <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1"><Icons.Calendar /> {appointments[0].date}</p>
+              </div>
+              <button 
+                onClick={() => setCurrentView('profile')}
+                className="bg-brand-accent/10 text-brand-accent px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-brand-accent/20 transition-colors"
+              >
+                Visualizar
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* DESTAQUES (Carrossel Horizontal - Estilo Foto 1) */}
         <div className="pl-6 mb-8">
@@ -449,8 +436,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-
-        {/* NOTE: Sem BottomNav nesta tela */}
       </main>
     );
   }
@@ -724,7 +709,7 @@ export default function Home() {
       <main className="min-h-screen bg-[#0a0a0a] p-6 text-white flex flex-col pb-28">
         <header className="flex justify-between items-center mb-10 pt-2">
           <h2 className="text-sm tracking-widest text-brand-accent font-bold">MEU PERFIL</h2>
-          <button onClick={() => { logout(); setCurrentView('landing'); }} className="text-xs text-red-400 font-bold uppercase tracking-widest">Sair</button>
+          <button onClick={() => { logout(); setCurrentView('login'); }} className="text-xs text-red-400 font-bold uppercase tracking-widest">Sair</button>
         </header>
 
         <div className="flex flex-col items-center mb-10">
